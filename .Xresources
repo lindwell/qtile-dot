@@ -1,0 +1,15 @@
+URxvt.font: 		xft:agave regular Nerd Font Complete:pixelsize=13
+URxvt.scrollBar: 	false
+URxvt.letterSpace: 	-2
+URxvt.lineSpace: 	-1
+
+
+URxvt.perl-ext-common:	default, resize-font
+
+
+
+URxvt.keysym.M-minus:     resize-font:smaller
+URxvt.keysym.M-plus:      resize-font:bigger
+URxvt.keysym.M-equal:     resize-font:reset
+URxvt.keysym.M-question:  resize-font:show
+
