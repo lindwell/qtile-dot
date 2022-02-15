@@ -199,6 +199,7 @@ layouts = [
     #layout.Bsp(**layout_theme),
     #layout.Matrix(**layout_theme),
     layout.Floating(**layout_theme),
+    #layout.Slice(**layout_theme),
     #Plasma(**layout_theme),
     # layout.MonadWide(),
     # layout.TreeTab(),
@@ -274,6 +275,7 @@ cursor_warp = False
 floating_layout = layout.Floating(float_rules=[
     # Run the utility of `xprop` to see the wm class and name of an X client.
     *layout.Floating.default_float_rules,
+    Match(wm_class='4kvideodownloader-bin'),
     Match(wm_class='mpv'),
     Match(wm_class='confirmreset'),  # gitk
     Match(wm_class='makebranch'),  # gitk
