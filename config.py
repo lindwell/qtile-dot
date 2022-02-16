@@ -36,7 +36,7 @@ from libqtile.utils import guess_terminal
 from libqtile import hook
 
 colors = []
-cache='/home/c13h21no3/.cache/wal/colors'
+cache = os.path.expanduser('~/.cache/wal/colors')
 def load_colors(cache):
     with open(cache, 'r') as file:
         for i in range(8):
