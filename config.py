@@ -66,7 +66,7 @@ keys = [
     
     #Key([mod], "space", lazy.toggle_focus_floating(), lazy.warp_cursor_here()),
     #Key([mod], "space", lazy.window.cmd_disable_floating()),
-    Key([mod], "f", lazy.window.toggle_floating()),
+    Key([mod], "space", lazy.window.toggle_floating()),
 
     Key([mod, "shift"], "m", lazy.layout.maximize(), desc="Maximize window"),
     Key([mod], "m", lazy.layout.normalize()),
@@ -196,10 +196,11 @@ layouts = [
     #layout.Stack(num_stacks=2),
     #layout.Tile(**layout_theme),
     #layout.RatioTile(**layout_theme),
+    #layout.MonadThreeCol(**layout_theme),
     #layout.Bsp(**layout_theme),
     #layout.Matrix(**layout_theme),
     layout.Floating(**layout_theme),
-    #layout.Slice(**layout_theme),
+    layout.Slice(**layout_theme),
     #Plasma(**layout_theme),
     # layout.MonadWide(),
     # layout.TreeTab(),
@@ -234,10 +235,12 @@ screens = [
 		),
                 widget.GroupBox(
 			border=colors[2], 
-			padding=3,
-			rounded=True,
-			borderwidth=3,
-			this_current_screen_border=colors[2]
+			#background=colors[2],
+			padding=8,
+			rounded=False,
+			#borderwidth=3,
+			this_current_screen_border=colors[2],
+			highlight_method='block',
 			),
                 widget.WindowName(),
                 widget.Prompt(),
@@ -250,6 +253,11 @@ screens = [
                 widget.Clock(format='%Y-%m-%d %a %I:%M %p'),
 		widget.Wlan(),
 		widget.Systray(),
+		widget.Bluetooth(
+			max_chars=5,
+			fontsize=5,
+			background=colors[3]	
+			),
 		widget.Battery(),
                 widget.QuickExit(),
             ],
