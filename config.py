@@ -69,13 +69,13 @@ keys = [
     Key([mod], "space", lazy.window.toggle_floating()),
 
     Key([mod, "shift"], "m", lazy.layout.maximize(), desc="Maximize window"),
-    Key([mod], "m", lazy.layout.normalize()),
+    Key([mod], "m", lazy.layout.normalize(), desc="reset windows for columns"),
 
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left(),
+    Key([mod, "shift"], "h", lazy.layout.swap_left(),
         desc="Move window to the left"),
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right(),
+    Key([mod, "shift"], "l", lazy.layout.swap_right(),
         desc="Move window to the right"),
     Key([mod, "shift"], "j", lazy.layout.shuffle_down(),
         desc="Move window down"),
@@ -91,7 +91,8 @@ keys = [
         desc="Grow window down"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
     Key([mod], "i", lazy.layout.grow()),
-    Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
+    Key([mod], "d" , lazy.layout.shrink()),
+    Key([mod], "n", lazy.layout.reset(), desc="Reset all window sizes normalizes windows for monadtall"),
 
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
@@ -115,21 +116,21 @@ keys = [
     Key([mod], "e", lazy.spawn("thunar"), desc="run thunar"),
 
     #plasma layout keys
-    Key([mod, "mod1"], "h", lazy.layout.integrate_left()),
-    Key([mod, "mod1"], "j", lazy.layout.integrate_down()),
-    Key([mod, "mod1"], "k", lazy.layout.integrate_up()),
-    Key([mod, "mod1"], "l", lazy.layout.integrate_right()),
-    Key([mod], "v", lazy.layout.mode_horizontal()),
-    Key([mod], "d", lazy.layout.mode_vertical()),
-    Key([mod, "shift"], "v", lazy.layout.mode_horizontal_split()),
-    Key([mod, "shift"], "d", lazy.layout.mode_vertical_split()),
-    Key([mod], "a", lazy.layout.grow_width(30)),
-    Key([mod], "x", lazy.layout.grow_width(-30)),
-    Key([mod, "shift"], "a", lazy.layout.grow_height(30)),
-    Key([mod, "shift"], "x", lazy.layout.grow_height(-30)),
-    Key([mod, "control"], "5", lazy.layout.size(500)),
-    Key([mod, "control"], "8", lazy.layout.size(800)),
-    Key([mod], "n", lazy.layout.reset_size()),
+    #Key([mod, "mod1"], "h", lazy.layout.integrate_left()),
+    #Key([mod, "mod1"], "j", lazy.layout.integrate_down()),
+    #Key([mod, "mod1"], "k", lazy.layout.integrate_up()),
+    #Key([mod, "mod1"], "l", lazy.layout.integrate_right()),
+    #Key([mod], "v", lazy.layout.mode_horizontal()),
+    #Key([mod], "d", lazy.layout.mode_vertical()),
+    #Key([mod, "shift"], "v", lazy.layout.mode_horizontal_split()),
+    #Key([mod, "shift"], "d", lazy.layout.mode_vertical_split()),
+    #Key([mod], "a", lazy.layout.grow_width(30)),
+    #Key([mod], "x", lazy.layout.grow_width(-30)),
+    #Key([mod, "shift"], "a", lazy.layout.grow_height(30)),
+    #Key([mod, "shift"], "x", lazy.layout.grow_height(-30)),
+    #Key([mod, "control"], "5", lazy.layout.size(500)),
+    #Key([mod, "control"], "8", lazy.layout.size(800)),
+    #Key([mod], "n", lazy.layout.reset_size()),
 
 ]
 
@@ -179,18 +180,17 @@ def toggle_focus_floating():
 
 def init_layout_theme():
 	return {"margin":		10,
-		"border_width":		3,
+		"border_width":		7,
 		"border_focus":		colors[2],
-		"border_normal":	colors[1],
-		"border_focus":		colors[1],
+		"border_normal":	colors[6],
 		"border_single_width":	3,
 		}
 
 layout_theme = init_layout_theme()
 
 layouts = [
-    layout.Columns(**layout_theme),
-    #layout.MonadTall(**layout_theme),
+    #layout.Columns(**layout_theme),
+    layout.MonadTall(**layout_theme),
     layout.Max(**layout_theme),
     # Try more layouts by unleashing below layouts.
     #layout.Stack(num_stacks=2),
@@ -200,7 +200,7 @@ layouts = [
     #layout.Bsp(**layout_theme),
     #layout.Matrix(**layout_theme),
     layout.Floating(**layout_theme),
-    layout.Slice(**layout_theme),
+    #layout.Slice(**layout_theme, fallback=layout.Columns()),
     #Plasma(**layout_theme),
     # layout.MonadWide(),
     # layout.TreeTab(),
@@ -216,6 +216,13 @@ widget_defaults = dict(
 
 extension_defaults = widget_defaults.copy()
 
+sep_defaults = dict(
+linewidth=2,
+padding=6,
+foreground=colors[2],
+background=colors[0],
+)
+
 screens = [
     Screen(
         top=bar.Bar(
@@ -226,42 +233,42 @@ screens = [
 			foreground=colors[2],
 			background=colors[0]
 		),
-                widget.CurrentLayout(),
-		widget.Sep(
-			linewidth=0,
-			padding=6,
-			foreground=colors[2],
-			background=colors[0]
-		),
+                widget.CurrentLayoutIcon(),
+		widget.Sep(**sep_defaults),
                 widget.GroupBox(
 			border=colors[2], 
 			#background=colors[2],
 			padding=8,
-			rounded=False,
+			rounded=True,
 			#borderwidth=3,
 			this_current_screen_border=colors[2],
 			highlight_method='block',
 			),
+		widget.Sep(**sep_defaults),
+
                 widget.WindowName(),
-                widget.Prompt(),
+                #widget.Prompt(),
                 widget.Chord(
                     chords_colors={
                         'launch': (colors[2],colors[1]),
                     },
                     name_transform=lambda name: name.upper(),
                 ),	
+		widget.Sep(**sep_defaults),
                 widget.Clock(format='%Y-%m-%d %a %I:%M %p'),
-		widget.Wlan(),
+		widget.Sep(**sep_defaults),
 		widget.Systray(),
-		widget.Bluetooth(
-			max_chars=5,
-			fontsize=5,
-			background=colors[3]	
-			),
+		widget.Sep(**sep_defaults),
+		widget.Volume(
+			fmt = "Vol: {}",
+			padding = 5	
+		),
+		widget.Sep(**sep_defaults),
 		widget.Battery(),
+		widget.Sep(**sep_defaults),
                 widget.QuickExit(),
             ],
-            35,
+            40,
 	    background=colors[0],
         ),
     ),
